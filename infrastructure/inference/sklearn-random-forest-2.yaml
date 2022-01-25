@@ -1,0 +1,28 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: sklearn-random-forest-2
+  namespace: inference
+spec:
+  predictors:
+  - componentSpecs:
+    - spec:
+        containers:
+        - image: gcr.io/mx-k8s-sandbox-emir/classifier:7058cbd-11849
+          imagePullPolicy: Always
+          name: classifier
+    explainer:
+      envSecretRefName: seldon-init-container-secret
+      modelUri: s3://mlflow/explainer2
+      type: TreeShap
+    graph:
+      children: []
+      envSecretRefName: seldon-init-container-secret
+      name: classifier
+      parameters:
+      - name: model_uri
+        type: STRING
+        value: mlflow/0/514df291ef1b43f1bc100fe08082d42f/artifacts/model/model.pkl
+      type: MODEL
+    name: default
+    replicas: 1
